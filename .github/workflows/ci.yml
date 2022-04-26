@@ -63,6 +63,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up compiler
+        uses: egor-tensin/setup-${{matrix.compiler}}@v1
+        with:
+          version: ${{matrix.version}}
+          platform: x64
+
       - name: Configure CMake
         env:
           CC: ${{matrix.compiler}}-${{matrix.version}}
