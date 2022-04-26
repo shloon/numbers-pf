@@ -1,0 +1,77 @@
+name: CMake
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-and-test-linux:
+    name: Build & Test (Linux)
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        version: [7, 8, 9, 10, 11]
+        include:
+          # gcc
+          - compiler: gcc
+            compiler_cxx: g++
+            version: 7
+          - compiler: gcc
+            compiler_cxx: g++
+            version: 8
+          - compiler: gcc
+            compiler_cxx: g++
+            version: 9
+          - compiler: gcc
+            compiler_cxx: g++
+            version: 10
+          - compiler: gcc
+            compiler_cxx: g++
+            version: 11
+          # clang
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 7
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 8
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 9
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 10
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 11
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 12
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 13
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 14
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        env:
+          CC: ${{matrix.compiler}}-${{matrix.version}}
+          CXX: ${{matrix.compiler_cxx}}-${{matrix.version}}
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
