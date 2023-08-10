@@ -12,11 +12,11 @@ env:
 jobs:
   build-and-test-linux:
     name: Build & Test (Linux)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         compiler: [gcc, clang]
-        version: [7, 8, 9, 10, 11]
+        version: [7, 8, 9, 10, 11, 12]
         include:
           # gcc
           - compiler: gcc
@@ -34,6 +34,9 @@ jobs:
           - compiler: gcc
             compiler_cxx: g++
             version: 11
+          - compiler: gcc
+            compiler_cxx: g++
+            version: 12
           # clang
           - compiler: clang
             compiler_cxx: clang++
@@ -59,9 +62,14 @@ jobs:
           - compiler: clang
             compiler_cxx: clang++
             version: 14
+          - compiler: clang
+            compiler_cxx: clang++
+            version: 15
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: true
 
       - name: Set up GCC
         uses: egor-tensin/setup-gcc@v1
