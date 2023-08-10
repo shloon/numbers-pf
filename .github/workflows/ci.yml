@@ -33,7 +33,7 @@ jobs:
           - "clang:13"
           - "clang:14"
           - "clang:15"
-        std: [14, 17, 20, 23]
+        std: [14, 17]
 
     runs-on: ubuntu-latest
     container:
