@@ -11,85 +11,41 @@ env:
 
 jobs:
   build-and-test-linux:
-    name: Build & Test (Linux)
-    runs-on: ubuntu-20.04
+    name: Build & Test (Linux GCC)
     strategy:
+      fail-fast: false
       matrix:
-        compiler: [gcc, clang]
-        version: [7, 8, 9, 10, 11, 12]
-        include:
-          # gcc
-          - compiler: gcc
-            compiler_cxx: g++
-            version: 7
-          - compiler: gcc
-            compiler_cxx: g++
-            version: 8
-          - compiler: gcc
-            compiler_cxx: g++
-            version: 9
-          - compiler: gcc
-            compiler_cxx: g++
-            version: 10
-          - compiler: gcc
-            compiler_cxx: g++
-            version: 11
-          - compiler: gcc
-            compiler_cxx: g++
-            version: 12
-          # clang
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 7
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 8
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 9
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 10
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 11
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 12
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 13
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 14
-          - compiler: clang
-            compiler_cxx: clang++
-            version: 15
+        image:
+          # List: https://github.com/conan-io/conan-docker-tools
+          - "gcc:7"
+          - "gcc:8"
+          - "gcc:9"
+          - "gcc:10"
+          - "gcc:11"
+          - "gcc:12"
+          - "clang:6"
+          - "clang:7"
+          - "clang:8"
+          - "clang:9"
+          - "clang:10"
+          - "clang:11"
+          - "clang:12"
+          - "clang:13"
+          - "clang:14"
+          - "clang:15"
+        std: [14, 17, 20, 23]
 
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/foonathan/${{matrix.image}}
+    
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
 
-      - name: Set up GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: ${{matrix.version}}
-          platform: x64
-        if: matrix.compiler == 'gcc'
-
-      - name: Set up Clang
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: ${{matrix.version}}
-          platform: x64
-        if: matrix.compiler == 'clang'
-
       - name: Configure CMake
-        env:
-          CC: ${{matrix.compiler}}-${{matrix.version}}
-          CXX: ${{matrix.compiler_cxx}}-${{matrix.version}}
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_CXX_STANDARD=${{matrix.std}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
