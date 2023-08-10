@@ -1,0 +1,82 @@
+#include <type_traits>
+
+#ifdef __cpp_inline_variables
+#define NPF_INLINE inline
+#else
+#define NPF_INLINE
+#endif
+
+namespace pf {
+namespace numbers {
+
+namespace detail {
+template <typename T> struct floating_point {
+  static_assert(std::is_floating_point<T>::value,
+                "A program that instantiates a primary template of a "
+                "mathematical constant variable template is ill-formed.");
+  using type = T;
+};
+template <typename T> using floating_point_t = typename floating_point<T>::type;
+} // namespace detail
+
+#if __cpp_variable_templates < 201304L
+#error "The <numbers> polyfill requires varaible template support"
+#else
+template <typename T>
+NPF_INLINE constexpr T e_v = static_cast<detail::floating_point_t<T>>(
+    2.718281828459045235360287471352662);
+template <typename T>
+NPF_INLINE constexpr T log2e_v = static_cast<detail::floating_point_t<T>>(
+    1.442695040888963407359924681001892);
+template <typename T>
+NPF_INLINE constexpr T log10e_v = static_cast<detail::floating_point_t<T>>(
+    0.434294481903251827651128918916605);
+template <typename T>
+NPF_INLINE constexpr T pi_v = static_cast<detail::floating_point_t<T>>(
+    3.141592653589793238462643383279502);
+template <typename T>
+NPF_INLINE constexpr T inv_pi_v = static_cast<detail::floating_point_t<T>>(
+    0.318309886183790671537767526745028);
+template <typename T>
+NPF_INLINE constexpr T inv_sqrtpi_v = static_cast<detail::floating_point_t<T>>(
+    0.564189583547756286948079451560772);
+template <typename T>
+NPF_INLINE constexpr T ln2_v = static_cast<detail::floating_point_t<T>>(
+    0.693147180559945309417232121458176);
+template <typename T>
+NPF_INLINE constexpr T ln10_v = static_cast<detail::floating_point_t<T>>(
+    2.302585092994045684017991454684364);
+template <typename T>
+NPF_INLINE constexpr T sqrt2_v = static_cast<detail::floating_point_t<T>>(
+    1.414213562373095048801688724209698);
+template <typename T>
+NPF_INLINE constexpr T sqrt3_v = static_cast<detail::floating_point_t<T>>(
+    1.732050807568877293527446341505872);
+template <typename T>
+NPF_INLINE constexpr T inv_sqrt3_v = static_cast<detail::floating_point_t<T>>(
+    0.577350269189625764509148780501957);
+template <typename T>
+NPF_INLINE constexpr T egamma_v = static_cast<detail::floating_point_t<T>>(
+    0.577215664901532860606512090082402);
+template <typename T>
+NPF_INLINE constexpr T phi_v = static_cast<detail::floating_point_t<T>>(
+    1.618033988749894848204586834365638);
+
+NPF_INLINE constexpr double e = e_v<double>;
+NPF_INLINE constexpr double log2e = log2e_v<double>;
+NPF_INLINE constexpr double log10e = log10e_v<double>;
+NPF_INLINE constexpr double pi = pi_v<double>;
+NPF_INLINE constexpr double inv_pi = inv_pi_v<double>;
+NPF_INLINE constexpr double inv_sqrtpi = inv_sqrtpi_v<double>;
+NPF_INLINE constexpr double ln2 = ln2_v<double>;
+NPF_INLINE constexpr double ln10 = ln10_v<double>;
+NPF_INLINE constexpr double sqrt2 = sqrt2_v<double>;
+NPF_INLINE constexpr double sqrt3 = sqrt3_v<double>;
+NPF_INLINE constexpr double inv_sqrt3 = inv_sqrt3_v<double>;
+NPF_INLINE constexpr double egamma = egamma_v<double>;
+NPF_INLINE constexpr double phi = phi_v<double>;
+
+#endif
+
+} // namespace numbers
+} // namespace pf
